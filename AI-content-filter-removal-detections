@@ -1,0 +1,70 @@
+Building detections that watch for the removal of controls from AI? You'll like this!  Here’s summary of the key API calls and endpoints across AWS, Azure, and GCP that correspond to disabling or weakening AI guardrails you can watch for in logs.
+
+
+1. API to monitor: Amazon Bedrock - DeleteGuardrail via CloudTrail
+
+This detects removal a guardrail from a Bedrock model
+
+.
+
+ → Detection logic:
+
+{ "eventName": ["DeleteGuardrail"], "source": ["aws.bedrock"] }
+
+source: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_DeleteGuardrail.html
+
+
+
+
+
+2. API to monitor: Azure Foundry DeleteContentFilter
+
+In Azure Event Logs, detect potential removal of content filter :
+
+
+
+"operationName": [
+
+ "Microsoft.CognitiveServices/accounts/configs/write",
+
+ "Microsoft.CognitiveServices/accounts/configs/delete"
+
+]
+
+source: https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/content-filters
+
+
+
+3. API to monitor: In Google Cloud | Gemini | Vertex AI change content filters
+
+Safety filters are adjusted per-request using parameters like:
+
+
+
+"safetySettings": {
+
+  "HARM_CATEGORY_HARASSMENT": "BLOCK_NONE",
+
+  "HARM_CATEGORY_DANGEROUS_CONTENT": "BLOCK_NONE",
+
+  // ...
+
+}
+
+Setting them to BLOCK_NONE effectively disables guardrails ai.google.dev
+
+. Monitor GenerateContent or chat.generate API calls with payloads removing safeguards.
+
+
+
+Vertex AI
+
+"methodName": "google.cloud.discoveryengine.v1.SearchService.Search",
+
+"request.safe_search": false
+
+
+
+
+
+source: https://ai.google.dev/gemini-api/docs/safety-settings and https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/configure-safety-filters
